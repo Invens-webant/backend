@@ -24,9 +24,6 @@ services:
     volumes:
       - ./:/srv/api:rw,cached
       - ./docker/php/conf.d/api-platform.dev.ini:/usr/local/etc/php/conf.d/api-platform.ini
-      # if you develop on Linux, you may use a bind-mounted host directory instead
-      # - ./api/var:/srv/api/var:rw
-      - dev-certs:/certs:ro,nocopy
 
   api:
     build:
@@ -49,8 +46,6 @@ services:
       - UPSTREAM=http://api
     depends_on:
       - api
-    volumes:
-      - dev-certs:/certs:ro,nocopy
     ports:
       - target: 443
         published: 8443
@@ -63,29 +58,9 @@ services:
       - POSTGRES_PASSWORD=!ChangeMe!
       - POSTGRES_USER=api-platform
     volumes:
-      # you may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      - ./api/docker/db/data:/var/lib/postgresql/data:rw
+      - ./docker/db/data:/var/lib/postgresql/data:rw
     ports:
-      - target: 5432
-        published: 5432
-        protocol: tcp
-
-  mercure:
-    image: dunglas/mercure
-    environment:
-      - ALLOW_ANONYMOUS=1
-      - CERT_FILE=/certs/localhost.crt
-      - CORS_ALLOWED_ORIGINS=*
-      - DEMO=1
-      - JWT_KEY=!ChangeMe!
-      - KEY_FILE=/certs/localhost.key
-      - PUBLISH_ALLOWED_ORIGINS=https://localhost:1337 # required for publishing from the demo page
-    volumes:
-      - dev-certs:/certs:ro,nocopy
-    ports:
-      - target: 443
-        published: 1337
-        protocol: tcp
+      - 5432:5432
 
   similar:
     image: vitaliybratyshov/hack-simular:latest
@@ -96,13 +71,3 @@ services:
     ports:
       - 8081:8081
     restart: always
-
-
-networks:
-  esnet:
-
-volumes:
-  db-data: {}
-  dev-certs: {}
-  esdata1:
-    driver: local

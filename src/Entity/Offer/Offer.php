@@ -137,12 +137,14 @@ class Offer extends BaseEntity
 
     /**
      * @ORM\ManyToMany(targetEntity=MediaObject::class)
+     * @ORM\JoinTable(name="offer_file")
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public $files;
 
     /**
      * @ORM\ManyToMany(targetEntity=MediaObject::class)
+     * @ORM\JoinTable(name="offer_document")
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public $documents;
