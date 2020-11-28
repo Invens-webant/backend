@@ -25,3 +25,4 @@
 
 .idea
 docker/elasticsearch
+docker/db
