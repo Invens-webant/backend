@@ -45,6 +45,10 @@ use App\Controller\Offer\GetSimilarOffers;
  *              "path": "/offers/{id}/similar"
  *           }
  *     },
+ *     attributes={
+ *        "normalization_context"={"groups"={"GetOffer","GetObjOffer", "GetObjBase"}},
+ *        "denormalization_context"={"groups"={"SetOffer"}},
+ *     },
  *    cacheHeaders={"max_age"=60, "shared_max_age"=120, "vary"={"Authorization","authorization","Accept-Language"}}
  * )
  * @ORM\Entity()
@@ -85,7 +89,7 @@ class Offer extends BaseEntity
 
     /**
      * @ORM\Column(type="integer", options={"default": 0})
-     * @Groups({"GetOffer","GetObjOffer"})
+     * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public int $status = self::STATUS_PENDING;
 
@@ -132,16 +136,13 @@ class Offer extends BaseEntity
     public $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity=MediaObject::class, mappedBy="offerFile")
+     * @ORM\ManyToMany(targetEntity=MediaObject::class)
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public $files;
 
     /**
-     * @var MediaObject|null
-     *
-     * @ORM\OneToMany(targetEntity=MediaObject::class, mappedBy="offerDocument")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\ManyToMany(targetEntity=MediaObject::class)
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public $documents;
@@ -150,7 +151,6 @@ class Offer extends BaseEntity
      * @var MediaObject|null
      *
      * @ORM\OneToOne(targetEntity=OfferSettings::class)
-     * @ORM\JoinColumn(nullable=true)
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public $settings;
@@ -203,4 +203,31 @@ class Offer extends BaseEntity
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public $result;
+
+    public function addFile(MediaObject $mediaObject)
+    {
+        if ($this->files->contains($mediaObject)) {
+            return;
+        }
+        $this->files[] = $mediaObject;
+    }
+
+    public function removeStudiedGenus(MediaObject $mediaObject)
+    {
+        $this->files->removeElement($mediaObject);
+    }
+
+    public function addDocument(MediaObject $mediaObject)
+    {
+        if ($this->documents->contains($mediaObject)) {
+            return;
+        }
+        $this->documents[] = $mediaObject;
+    }
+
+    public function removeDocument(MediaObject $mediaObject)
+    {
+        $this->documents->removeElement($mediaObject);
+    }
+
 }

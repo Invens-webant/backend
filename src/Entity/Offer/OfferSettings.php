@@ -103,15 +103,15 @@ class OfferSettings extends BaseEntity
      */
     public DateTime $dateTestEnd;
 
-    /**
-     * @var MediaObject|null
-     *
-     * @ORM\ManyToOne(targetEntity=MediaObject::class)
-     * @ORM\JoinColumn(nullable=true)
-     * @ApiProperty(iri="http://schema.org/image")
-     * @Groups({"GetOfferSetiings","GetObjOfferSetiings", "SetOfferSetiings"})
-     */
-    public $protocols; // список протоколов экспертов
+//    /**
+//     * @var MediaObject|null
+//     *
+//     * @ORM\ManyToOne(targetEntity=MediaObject::class)
+//     * @ORM\JoinColumn(nullable=true)
+//     * @ApiProperty(iri="http://schema.org/image")
+//     * @Groups({"GetOfferSetiings","GetObjOfferSetiings", "SetOfferSetiings"})
+//     */
+//    public $protocols; // список протоколов экспертов
 
     /**
      * @var int
@@ -119,5 +119,32 @@ class OfferSettings extends BaseEntity
      * @Assert\Range(min="0", max="10")
      */
     public int $priority;
+
+    public function addMail(ExpertMail $mail)
+    {
+        if ($this->mails->contains($mail)) {
+            return;
+        }
+        $this->mails[]  = $mail;
+    }
+
+    public function removeStudiedGenus(ExpertMail $mail)
+    {
+        $this->mails->removeElement($mail);
+    }
+
+
+    public function addExpert(User $user)
+    {
+        if ($this->mails->contains($user)) {
+            return;
+        }
+        $this->experts[]  = $user;
+    }
+
+    public function removeExpert(User $user)
+    {
+        $this->mails->removeElement($user);
+    }
 
 }
