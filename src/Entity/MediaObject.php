@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use App\Entity\Offer\Offer;
 
 /**
  * @ORM\Entity
@@ -81,6 +82,16 @@ class MediaObject
      * @ORM\Column(nullable=true)
      */
     public $filePath;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Offer::class, inversedBy="files")
+     */
+    public $offerFile;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Offer::class, inversedBy="documents")
+     */
+    public $offerDocument;
 
     public function getId(): ?int
     {

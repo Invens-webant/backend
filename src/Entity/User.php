@@ -14,6 +14,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\{
     SearchFilter,
     NumericFilter
 };
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -30,6 +31,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\{
  *    cacheHeaders={"max_age"=60, "shared_max_age"=120, "vary"={"Authorization","authorization","Accept-Language"}}
  * )
  * @ORM\Entity()
+ * @ORM\Table(name="ros_user")
  * @ApiFilter(NumericFilter::class, properties={"id"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "name"="partial",
@@ -39,13 +41,28 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\{
  * })
  * @ApiFilter(OrderFilter::class)
  */
-class User extends BaseEntity
+class User
 {
+
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    public $id;
+
     /**
      * @var string
      * @ORM\Column(type="string", unique=true)
      */
     public string $name;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", unique=true)
+     * @Assert\Email()
+     */
+    public string $email;
 
     /**
      * @var string
@@ -58,5 +75,10 @@ class User extends BaseEntity
      * @ORM\Column(type="string", unique=true)
      */
     public string $jobTitle;
+
+    /**
+     * @ORM\Column(type="integer", options={"default": 0})
+     */
+    public int $role = 0;
 
 }

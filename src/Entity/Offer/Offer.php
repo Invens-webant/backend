@@ -25,22 +25,30 @@ use App\Entity\Offer\Solution;
 use App\Entity\Offer\OfferSettings;
 use App\Entity\Offer\OfferResult;
 use App\Entity\User;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\Offer\GetSimilarOffers;
 
 /**
  * @ApiResource(
  *     description="Offer - Заявка",
  *     collectionOperations={
  *          "get",
- *          "post"
+ *          "post",
  *     },
  *     itemOperations={
  *          "get",
  *          "put",
- *          "delete"
+ *          "delete",
+ *          "getSimilar":{
+ *              "method": "GET",
+ *              "controller": GetSimilarOffers::class,
+ *              "path": "/offers/{id}/similar"
+ *           }
  *     },
  *    cacheHeaders={"max_age"=60, "shared_max_age"=120, "vary"={"Authorization","authorization","Accept-Language"}}
  * )
  * @ORM\Entity()
+ * @ORM\Table(name="offers")
  * @ApiFilter(NumericFilter::class, properties={"status","id"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "title"="partial",
@@ -70,6 +78,7 @@ class Offer extends BaseEntity
 
         $this->comments = new ArrayCollection();
         $this->solutions = new ArrayCollection();
+
         $this->documents = new ArrayCollection();
         $this->files = new ArrayCollection();
     }
@@ -120,13 +129,10 @@ class Offer extends BaseEntity
      * @ORM\OneToMany(targetEntity=Comment::class ,mappedBy="offer")
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
-    public ArrayCollection $comments;
+    public $comments;
 
     /**
-     * @var MediaObject|null
-     *
-     * @ORM\ManyToOne(targetEntity=MediaObject::class)
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\OneToMany(targetEntity=MediaObject::class, mappedBy="offerFile")
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public $files;
@@ -134,7 +140,7 @@ class Offer extends BaseEntity
     /**
      * @var MediaObject|null
      *
-     * @ORM\ManyToOne(targetEntity=MediaObject::class)
+     * @ORM\OneToMany(targetEntity=MediaObject::class, mappedBy="offerDocument")
      * @ORM\JoinColumn(nullable=true)
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
@@ -160,11 +166,19 @@ class Offer extends BaseEntity
      * @ORM\ManyToMany(targetEntity=User::class)
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
-    public ArrayCollection $coAuthors;
+    public $coAuthors;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
+     */
+    public $author;
 
     /**
      * @var string
      * @ORM\Column(type="json")
+     * @Assert\NotBlank()
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public string $costs;
