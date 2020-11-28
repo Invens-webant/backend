@@ -35,6 +35,7 @@ services:
     image: ${NGINX_IMAGE:-quay.io/api-platform/nginx}
     depends_on:
       - php
+      - training-app
     ports:
       - 8080:80
     volumes:
@@ -86,6 +87,29 @@ services:
       - target: 443
         published: 1337
         protocol: tcp
+
+  elasticsearch:
+    build: ./docker/elasticsearch
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./docker/elasticsearch/esdata1:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+
+networks:
+  esnet:
+
 volumes:
   db-data: {}
   dev-certs: {}
+  esdata1:
+    driver: local

@@ -64,7 +64,7 @@ class Solution extends BaseEntity
      * @ORM\Column(type="integer")
      * @Groups({"GetSolution","GetObjSolution", "SetSolution"})
      */
-    public int $status = Offer::STATUS_PENDING;
+    public int $newOfferStatus = Offer::STATUS_PENDING;
 
     /**
      * @ORM\ManyToOne(targetEntity=Offer::class, inversedBy="solutions")
