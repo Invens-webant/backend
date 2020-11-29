@@ -214,7 +214,7 @@ class Offer extends BaseEntity
         $this->files[] = $mediaObject;
     }
 
-    public function removeStudiedGenus(MediaObject $mediaObject)
+    public function removeFile(MediaObject $mediaObject)
     {
         $this->files->removeElement($mediaObject);
     }
