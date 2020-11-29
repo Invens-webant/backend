@@ -165,7 +165,7 @@ class Offer extends BaseEntity
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity=User::class)
+     * @ORM\Column(type="json")
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
     public $coAuthors;
