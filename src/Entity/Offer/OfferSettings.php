@@ -69,6 +69,7 @@ class OfferSettings extends BaseEntity
      * @Groups({"GetOfferSetiings","GetObjOfferSetiings", "SetOfferSetiings"})
      */
     public DateTime $dateEnd;
+
     /**
      * @ORM\ManyToMany(targetEntity=User::class)
      * @Groups({"GetOfferSetiings","GetObjOfferSetiings", "SetOfferSetiings"})

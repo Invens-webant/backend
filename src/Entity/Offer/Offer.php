@@ -53,7 +53,11 @@ use App\Controller\Offer\GetSimilarOffers;
  * )
  * @ORM\Entity()
  * @ORM\Table(name="offers")
- * @ApiFilter(NumericFilter::class, properties={"status","id"})
+ * @ApiFilter(NumericFilter::class, properties={
+ *     "status",
+ *     "id",
+ *     "author.id"
+ * })
  * @ApiFilter(SearchFilter::class, properties={
  *     "title"="partial",
  *     "category"="partial",
@@ -127,7 +131,7 @@ class Offer extends BaseEntity
      * @ORM\Column(type="float")
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
-    public float $rating;
+    public float $rating = 0;
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class ,mappedBy="offer")
@@ -168,7 +172,7 @@ class Offer extends BaseEntity
      * @ORM\Column(type="json")
      * @Groups({"GetOffer","GetObjOffer", "SetOffer"})
      */
-    public $coAuthors;
+    public $coAuthors = '[]';
 
     /**
      * @var ArrayCollection
